@@ -55,6 +55,8 @@ namespace ProfileDriven.Tests
             profile.ProfileQueue.Exclusive = false;
             profile.ProfileQueue.AutoDelete = false;
 
+            profile.BasicProperties.EnableMessageId = true;
+            profile.BasicProperties.EnableTimestamp = true;
             profile.BasicProperties.AppId = "proto";
             profile.BasicProperties.Headers.Add("x-test", "test");
             profile.BasicProperties.ContentType = RabbitProfile.PROTOBUF_CONTENT_TYPE;

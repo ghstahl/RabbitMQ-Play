@@ -11,6 +11,14 @@ namespace ProfileDriven.RabbitServices
             public Dictionary<string, object> Headers => _headers ?? (_headers = new Dictionary<string, object>());
             public string AppId { get; set; }
             public string ContentType { get; set; }
+            public string ContentEncoding { get; set; }
+            public string ClusterId { get; set; }
+            public string CorrelationId { get; set; }
+            public string Expiration { get; set; }
+            public bool Persist { get; set; }
+            public bool EnableMessageId { get; set; }
+            public bool EnableTimestamp { get; set; }
+            public string Type { get; set; }
 
         }
         private ProfileBasicProperties _basicProperties;

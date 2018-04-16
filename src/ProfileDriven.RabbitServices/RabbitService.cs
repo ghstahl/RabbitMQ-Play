@@ -68,8 +68,6 @@ namespace ProfileDriven.RabbitServices
                 using (var model = connection.CreateModel())
                 {
                     var mergedArgs = profileConfig.MergeArgs(args);
-                    var mergedHeaders = profileConfig.MergeHeaders(headers);
-
                     model.QueueDeclare(
                         queue: profileConfig.ProfileQueue.Queue
                         , durable: profileConfig.ProfileQueue.Durable
@@ -77,19 +75,10 @@ namespace ProfileDriven.RabbitServices
                         , autoDelete: profileConfig.ProfileQueue.AutoDelete
                         , arguments: mergedArgs.Count>0?mergedArgs:null);
 
-                    IBasicProperties props = model.CreateBasicProperties();
-                    props.AppId = profileConfig.BasicProperties.AppId;
-                    props.Headers = mergedHeaders;
-                    props.MessageId = Guid.NewGuid().ToString();
-                    if (!string.IsNullOrWhiteSpace(profileConfig.BasicProperties.ContentType))
-                    {
-                        props.ContentType = profileConfig.BasicProperties.ContentType;
-                    }
 
-                    var timeInMilliSeconds =
-                        Convert.ToInt64((DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalMilliseconds);
-                    props.Timestamp = new AmqpTimestamp(timeInMilliSeconds);
- 
+
+                    IBasicProperties props = profileConfig.BuildProperties(model, headers);
+
                     model.BasicPublish(
                         exchange: profileConfig.Exchange??"", 
                         routingKey: profileConfig.RouteKey,
