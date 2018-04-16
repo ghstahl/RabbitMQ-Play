@@ -1,0 +1,33 @@
+﻿{
+  "basicProperties": {
+    "appId": "",
+    "contentType": "",
+    "contentEncoding": "",
+    "clusterId": "",
+    "correlationId": "",
+    "expiration": "",
+    "persist": false,
+    "enableMessageId": false,
+    "enableTimestamp": false,
+    "type": "",
+    "headers": {
+      "x-test": "x-test-value"
+    }
+  },
+  "profileQueue": {
+    "queue": "",
+    "durable": false,
+    "exclusive": false,
+    "autoDelete": false
+  },
+  "name": "",
+  "routeKey": "",
+  "userAgent": "",
+  "exchange": "",
+  "deadLetterExchange": "",
+  "maxQueueLength": 0,
+  "args": {
+    "x-arg": "x-arg-value"
+  }
+
+}

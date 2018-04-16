@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Benchmark.Proto;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Newtonsoft.Json;
 using ProfileDriven.RabbitServices;
 using RabbitMQ.Client;
 
@@ -32,6 +33,40 @@ namespace ProfileDriven.Tests
         [TestInitialize]
         public void TestInit()
         {
+            string json = @"{
+                'basicProperties': {
+                    'appId': 'protoAppId',
+                    'contentType': 'application/x-protobuf',
+                    'contentEncoding': null,
+                    'clusterId': null,
+                    'correlationId': null,
+                    'expiration': null,
+                    'persist': true,
+                    'enableMessageId': true,
+                    'enableTimestamp': true,
+                    'type': null,
+                    'headers': {
+                        'x-test': 'x-test-value'
+                    }
+                },
+                'profileQueue': {
+                    'queue': 'proto',
+                    'durable': true,
+                    'exclusive': false,
+                    'autoDelete': false
+                },
+                'name': 'proto',
+                'routeKey': 'proto',
+                'userAgent': 'proto-aggregator-useragent',
+                'exchange': null,
+                'deadLetterExchange': null,
+                'maxQueueLength': 1000000,
+                'args': {
+                    'x-arg': 'x-arg-value'
+                }
+
+            }";
+
             /*
              *
              _factory = new ConnectionFactory
@@ -43,28 +78,12 @@ namespace ProfileDriven.Tests
                 Port = port
             };
              */
+
+            RabbitProfile profile =
+                JsonConvert.DeserializeObject<RabbitProfile>(json);
+
             _connectionFactory = new ConnectionFactory() { HostName = "localhost" };
-            RabbitProfile profile = new RabbitProfile()
-            {
-                Name = "proto",
-                RouteKey = "proto",
-                UserAgent = "proto-aggregator"
-            };
-            profile.ProfileQueue.Queue = "proto";
-            profile.ProfileQueue.Durable = true;
-            profile.ProfileQueue.Exclusive = false;
-            profile.ProfileQueue.AutoDelete = false;
-
-            profile.BasicProperties.EnableMessageId = true;
-            profile.BasicProperties.EnableTimestamp = true;
-            profile.BasicProperties.AppId = "proto";
-            profile.BasicProperties.Headers.Add("x-test", "test");
-            profile.BasicProperties.ContentType = RabbitProfile.PROTOBUF_CONTENT_TYPE;
-
-            //   profile.Args.Add("x-dead-letter-exchange", "x-dead-letter-exchange-value");
-            //   profile.Args.Add("x-max-length-bytes", 1000000);
-
-
+ 
 
             var rabbitServiceConfig = new RabbitServiceConfig()
             {
