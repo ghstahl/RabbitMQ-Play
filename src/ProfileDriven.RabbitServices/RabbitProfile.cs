@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Newtonsoft.Json;
-using RabbitMQ.Client.Framing;
 
 namespace ProfileDriven.RabbitServices
 {

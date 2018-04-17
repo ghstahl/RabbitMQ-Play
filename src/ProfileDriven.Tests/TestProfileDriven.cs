@@ -15,7 +15,6 @@ namespace ProfileDriven.Tests
 
         private IContainer _autofacContainer;
      
-        private static ConnectionFactory _connectionFactory;
         private RabbitService _rabbitService;
 
 
@@ -33,39 +32,54 @@ namespace ProfileDriven.Tests
         [TestInitialize]
         public void TestInit()
         {
-            string json = @"{
-                'basicProperties': {
-                    'appId': 'protoAppId',
-                    'contentType': 'application/x-protobuf',
-                    'contentEncoding': null,
-                    'clusterId': null,
-                    'correlationId': null,
-                    'expiration': null,
-                    'persist': true,
-                    'enableMessageId': true,
-                    'enableTimestamp': true,
-                    'type': null,
-                    'headers': {
-                        'x-test': 'x-test-value'
+            string rabbitServiceConfigJson = @"
+            {
+                'rabbitServerConfig':{
+                    'nameSpace': null,
+                    'host': 'localhost',
+                    'altHost': null,
+                    'virtualHost': null,
+                    'username': null,
+                    'password': null,
+                    'port': null
+                },
+                'profiles':{
+                    'proto':{
+                        'basicProperties': {
+                            'appId': 'protoAppId',
+                            'contentType': 'application/x-protobuf',
+                            'contentEncoding': null,
+                            'clusterId': null,
+                            'correlationId': null,
+                            'expiration': null,
+                            'persist': true,
+                            'enableMessageId': true,
+                            'enableTimestamp': true,
+                            'type': null,
+                            'headers': {
+                                'x-test': 'x-test-value'
+                            }
+                        },
+                        'profileQueue': {
+                            'queue': 'proto',
+                            'durable': true,
+                            'exclusive': false,
+                            'autoDelete': false
+                        },
+                        'name': 'proto',
+                        'routeKey': 'proto',
+                        'userAgent': 'proto-aggregator-useragent',
+                        'exchange': null,
+                        'deadLetterExchange': null,
+                        'maxQueueLength': 1000000,
+                        'args': {
+                            'x-arg': 'x-arg-value'
+                        }
                     }
-                },
-                'profileQueue': {
-                    'queue': 'proto',
-                    'durable': true,
-                    'exclusive': false,
-                    'autoDelete': false
-                },
-                'name': 'proto',
-                'routeKey': 'proto',
-                'userAgent': 'proto-aggregator-useragent',
-                'exchange': null,
-                'deadLetterExchange': null,
-                'maxQueueLength': 1000000,
-                'args': {
-                    'x-arg': 'x-arg-value'
-                }
-
+                 }
             }";
+
+
 
             /*
              *
@@ -79,21 +93,9 @@ namespace ProfileDriven.Tests
             };
              */
 
-            RabbitProfile profile =
-                JsonConvert.DeserializeObject<RabbitProfile>(json);
+            RabbitServiceConfig rabbitServiceConfig =
+                JsonConvert.DeserializeObject<RabbitServiceConfig>(rabbitServiceConfigJson);
 
-            _connectionFactory = new ConnectionFactory() { HostName = "localhost" };
- 
-
-            var rabbitServiceConfig = new RabbitServiceConfig()
-            {
-                RabbitServerConfig = new RabbitServerConfig()
-                {
-                    Host = "localhost"
-                }
-            };
-
-            rabbitServiceConfig.RabbitProfiles.Add(profile.Name, profile);
             _rabbitService = new RabbitService(rabbitServiceConfig);
         }
 
